@@ -49,51 +49,37 @@
 <body>
   <header>
     <h1>🎮 PatchBrowse</h1>
-    <button id="aiTab">🤖 Load My AI</button>
+    <button id="aiTab">🤖 Show My AI</button>
   </header>
-  <div id="tabBar"></div>
-  <div id="tabContent"></div>
+  <div id="tabBar">
+    <div class="tab active" data-id="tab-ai">My AI</div>
+  </div>
+  <div id="tabContent">
+    <div id="tab-ai">
+      <div id="deployment-0e2e26e8-4dc4-40ed-b8a0-8a5276dce1d1"></div>
+    </div>
+  </div>
 
   <!-- Pickaxe Embed Script -->
   <script src="https://studio.pickaxe.co/api/embed/bundle.js" defer></script>
 
   <script>
-    let tabCounter = 0;
-    const tabBar = document.getElementById("tabBar");
-    const tabContent = document.getElementById("tabContent");
-
-    document.getElementById("aiTab").addEventListener("click", () => {
-      const tabId = `tab-ai`;
-      if (document.getElementById(tabId)) {
-        activateTab(tabId);
-        return;
-      }
-
-      const tab = document.createElement("div");
-      tab.className = "tab";
-      tab.textContent = `My AI`;
-      tab.dataset.id = tabId;
-      tab.addEventListener("click", () => activateTab(tabId));
-      tabBar.appendChild(tab);
-
-      const tabPane = document.createElement("div");
-      tabPane.id = tabId;
-      tabPane.style.display = "none";
-      tabPane.innerHTML = `
-        <div id="deployment-0e2e26e8-4dc4-40ed-b8a0-8a5276dce1d1"></div>
-      `;
-      tabContent.appendChild(tabPane);
-      activateTab(tabId);
+    document.querySelectorAll(".tab").forEach(tab => {
+      tab.addEventListener("click", () => {
+        const id = tab.dataset.id;
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+        document.querySelectorAll("#tabContent > div").forEach(pane => {
+          pane.style.display = pane.id === id ? "block" : "none";
+        });
+      });
     });
 
-    function activateTab(id) {
-      document.querySelectorAll(".tab").forEach(tab => {
-        tab.classList.toggle("active", tab.dataset.id === id);
-      });
-      document.querySelectorAll("#tabContent > div").forEach(pane => {
-        pane.style.display = pane.id === id ? "block" : "none";
-      });
-    }
+    // Optional: Button to re-show AI tab
+    document.getElementById("aiTab").addEventListener("click", () => {
+      document.querySelector('[data-id="tab-ai"]').click();
+    });
   </script>
 </body>
 </html>
+
